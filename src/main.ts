@@ -1,7 +1,10 @@
 import { startREPL } from "./repl.js";
+import { initState } from "./state.js";
 
 function main() {
-  startREPL.prompt();
+  const state = initState();
+  startREPL(state);
+  state.readlineInterface.prompt();
 }
 
 main();

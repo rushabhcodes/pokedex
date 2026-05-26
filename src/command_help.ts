@@ -1,7 +1,10 @@
-export function commandHelp() {
+import type { State } from "./state.js";
+
+export function commandHelp(state: State): void {
   console.log(`Welcome to the Pokedex!
 Usage:
 
-help: Displays a help message
-exit: Exit the Pokedex`);
-};
+${Object.values(state.cliCommands)
+      .map((command) => `${command.name}: ${command.description}`)
+      .join("\n")}`);
+}
