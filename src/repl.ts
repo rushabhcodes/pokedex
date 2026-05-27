@@ -20,7 +20,7 @@ export async function startREPL(state: State): Promise<void> {
     const command = cliCommands[commandName];
     if (command) {
       try {
-        await command.callback(state);
+        await command.callback(state, ...input.slice(1));
       } catch (error) {
         console.error("Error running command:", error);
       }
