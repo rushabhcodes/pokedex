@@ -1,10 +1,9 @@
 import { startREPL } from "./repl.js";
 import { initState } from "./state.js";
 
-function main() {
+async function main(): Promise<void> {
   const state = initState();
-  startREPL(state);
-  state.readlineInterface.prompt();
+  await startREPL(state);
 }
 
-main();
+void main();

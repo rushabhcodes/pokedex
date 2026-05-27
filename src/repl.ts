@@ -4,25 +4,31 @@ export function cleanInput(input: string): string[] {
   return input.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
 }
 
-export function startREPL(state: State): void {
+export async function startREPL(state: State): Promise<void> {
   const { readlineInterface, cliCommands } = state;
 
-  readlineInterface.on("line", (line) => {
+  readlineInterface.prompt();
+
+  for await (const line of readlineInterface) {
     const input = cleanInput(line);
     if (input.length === 0) {
       readlineInterface.prompt();
-      return;
+      continue;
     }
 
     const commandName = input[0];
     const command = cliCommands[commandName];
     if (command) {
-      command.callback(state);
+      try {
+        await command.callback(state);
+      } catch (error) {
+        console.error("Error running command:", error);
+      }
     } else {
       console.log(`Unknown command: ${commandName}`);
     }
 
     readlineInterface.prompt();
-  });
+  }
 }
 
