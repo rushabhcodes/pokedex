@@ -29,6 +29,22 @@ export class PokeAPI {
     this.#cache.add(url, json);
     return json;
   }
+
+  async fetchPokemon(pokemonName: string): Promise<Pokemon | null> {
+    let canBeCatched = Math.random() < 0.5;
+    if (!canBeCatched) {
+      return null;
+    }
+
+    const url = `${PokeAPI.baseURL}/pokemon/${pokemonName}`;
+    const cached: Pokemon | null = this.#cache.get<Pokemon>(pokemonName);
+    if (cached) return cached;
+
+    const pokemon = await fetch(url);
+    const json: Pokemon = await pokemon.json();
+    this.#cache.add(pokemonName, json);
+    return json;
+  }
 }
 
 export type ShallowLocations = {
@@ -94,3 +110,30 @@ export interface Location {
   }[]
 }
 
+export type Pokemon = {
+  id: number;
+  name: string;
+  base_experience: number;
+  height: number;
+  is_default: boolean;
+  order: number;
+  weight: number;
+  stats: Stat[];
+  types: Type[];
+};
+
+export interface Stat {
+  baseStat: number;
+  effort: number;
+  stat: Species;
+}
+
+export interface Type {
+  slot: number;
+  type: Species;
+}
+
+export interface Species {
+  name: string;
+  url: string;
+}
